@@ -3,6 +3,10 @@ from pathlib import Path
 
 import pandas as pd
 
+import matplotlib.pyplot as plt
+
+import numpy as np
+
 # Define function
 def describe_df(df: pd.DataFrame):
     """
@@ -41,6 +45,62 @@ def describe_df(df: pd.DataFrame):
     # Copy of dataframe which only shows the rows of data that contains missing values
     print(f"\nRows with missing values:\n{df[df.isna().any(axis=1)]}")
 
+# Define new function to plot histograms
+def histogram_df(df: pd.DataFrame):
+    """
+    This function produces a visual plot of the dataframes in the form of histograms
+
+    Parameters:
+    df, the dataframe containing the data
+    columns: specific columns are plotted. If None, all numeric columns are used
+
+    Returns: 
+    A plot of the histograms
+    
+    """
+    columns = ["participants_m","participants_f"]
+    print("\nHistogram:")
+
+    # New variable that checks if the above the column exists by looping through the column names
+    # in the column names that want to be plotted
+    # and the column names in the dataframe (df.columns) and see if they match
+    existing_columns = [col for col in columns if col in df.columns]
+    
+    if existing_columns:
+        df[columns].hist(bins=15, rwidth=0.8)
+        plt.title("Boxplot of Male and Female Participants")
+        plt.tight_layout()
+        plt.show()
+
+    else:
+        print("\nNot possible to plot histogram if columns don't exist")
+
+# Define new function to create a box plot
+def boxplot_df(df: pd.DataFrame):
+    """
+    This function is similar to the function above which produces a histogram
+    
+    Parameters:
+    df, the dataframe containing the data
+
+    Returns:
+    Boxplot showing distributions and outliers
+
+    """
+    columns = ["participants_m","participants_f"]
+    print("\nBoxplot:")
+
+    existing_columns = [col for col in columns if col in df.columns]
+
+    if existing_columns:
+        df[columns].boxplot()
+        plt.show()
+
+    else:
+        print("\nNot possible to plot boxplot if columns don't exist")
+
+
+
 
 if __name__ == "__main__":
 
@@ -73,3 +133,6 @@ if __name__ == "__main__":
 
     print("\nDataFrame 3")
     describe_df(medal_standings_df)
+
+    histogram_df(paralympics_df)
+    boxplot_df(paralympics_df)
