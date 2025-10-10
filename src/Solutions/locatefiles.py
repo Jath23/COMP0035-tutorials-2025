@@ -99,7 +99,22 @@ def boxplot_df(df: pd.DataFrame):
     else:
         print("\nNot possible to plot boxplot if columns don't exist")
 
+def timeseries_df(df: pd.DataFrame):
+    """
+    Function that produces a line plot
+    
+    """
 
+    print("\nLine Plot:")
+
+    # Remove rows where either 'start' or 'participants' is missing
+    clean_df = df.dropna(subset=["year","participants"])
+    plt.plot(clean_df["year"], clean_df["participants"])
+    plt.xlabel("Year")
+    plt.ylabel("Total number of Participants")
+    plt.show()
+
+    # The line plot looks odd because the years are not arranged in chronological order 
 
 
 if __name__ == "__main__":
@@ -135,4 +150,7 @@ if __name__ == "__main__":
     describe_df(medal_standings_df)
 
     histogram_df(paralympics_df)
+
     boxplot_df(paralympics_df)
+
+    timeseries_df(paralympics_df)
