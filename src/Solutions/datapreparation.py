@@ -14,10 +14,8 @@ def standardise_categories(df: pd.DataFrame, Col_Name):
     Returns:
     The number of data for each standardised category
     """
-    # Locate the exact datapoints in the 'type' column, where the rows contain 'Summer'
-    # Map them to 'summer'
-    df.loc[df[Col_Name] == 'Summer',Col_Name] = 'summer'
-    df.loc[df[Col_Name] == 'winter ',Col_Name] = 'winter'
+    # Robustly map all category values to lowercase and remove spaces
+    df[Col_Name] = df[Col_Name].str.strip().str.lower()
 
     print(df[Col_Name].unique())
     print(df[Col_Name].value_counts())
@@ -39,8 +37,6 @@ def remove_columns(df: pd.DataFrame, columns_tobe_removed):
     df_removed = df.drop(columns = columns_tobe_removed)
     return df_removed
 
-
-
 if __name__ == "__main__":
 
     # Pathing the csv file from another folder within the src folder
@@ -55,4 +51,12 @@ if __name__ == "__main__":
     # New dataframe with removed columns
     columns_tobe_removed = ['URL','disabilities_included','highlights']
     df_prepared = remove_columns(paralympics_df, columns_tobe_removed)
+    
+    # Remove rows with indices 0,17 and 31 as they have missing/incorrect data
+    # Reset the index so that it is consecutive from zero
+    df_prepared = df_prepared.drop(index=[0,17,31])
+    df_prepared = df_prepared.reset_index(drop=True)
+    
+    
     print(df_prepared)
+
