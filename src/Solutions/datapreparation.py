@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd
 import matplotlib as plt
 
+
 # Define a new function that locates columns with the sae=me categorical data and maps them as the same
 # e.g. Summer = summer and Winter = winter
 def standardise_categories(df: pd.DataFrame, Col_Name):
@@ -37,6 +38,26 @@ def remove_columns(df: pd.DataFrame, columns_tobe_removed):
     df_removed = df.drop(columns = columns_tobe_removed)
     return df_removed
 
+# Function that changes dates in a string format to a datetime format
+def convert_dates(df: pd.DataFrame, columns = ['start','end'], date_format = '%d/%m/%Y'):
+    """
+    Converts date strings to a datetime format and localises timezone
+
+    Parameters:
+    df, the dataframe
+    columns: list of column names to be converted into datetime format
+    date_format: format of the string dates
+    timezone: identifies the timezone
+    
+    Returns:
+    dataframe with converted columns    
+    """
+    for col in columns:
+        df[col] = pd.to_datetime(df[col], format = date_format)
+        
+    return df
+
+
 if __name__ == "__main__":
 
     # Pathing the csv file from another folder within the src folder
@@ -57,6 +78,13 @@ if __name__ == "__main__":
     df_prepared = df_prepared.drop(index=[0,17,31])
     df_prepared = df_prepared.reset_index(drop=True)
     
+    # Code that changes all the float datatypes to integer 
+    column_type_float = ['countries','events','participants_m','participants_f','participants']
+    df_prepared[column_type_float] = df_prepared[column_type_float].astype('int')
     
-    print(df_prepared)
+    # Convert the start and end dates to datetime format
+    convert_dates(df_prepared)
+
+
+    print(f"\n{df_prepared}")
 
