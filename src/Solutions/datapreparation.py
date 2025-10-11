@@ -114,4 +114,11 @@ if __name__ == "__main__":
     # as it is the same as the 'country' column
     merged_df = merged_df.drop(columns=['Name'])
 
+    # Define the output path and save the merged dataframe to be reused
+    # Its name is updated to 'cleaned_paralympics.csv'
+    output_path = src_folder.joinpath('activities','data','cleaned_paralympics.csv')
+    merged_df.to_csv(output_path, index=False)
+
     print(f"\n{merged_df}")
+
+    
