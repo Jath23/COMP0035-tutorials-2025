@@ -85,6 +85,33 @@ if __name__ == "__main__":
     # Convert the start and end dates to datetime format
     convert_dates(df_prepared)
 
+    # Add a new column called duration with its values calculated by subtracting the start date from the end date
+    duration_values = (df_prepared['end']-df_prepared['start']).dt.days.astype('Int64')
+    # Insert the values as a new column the 'end' column
+    # 'df_prepared.insert(df_prepared.columns.get_loc('end')+1' finds the index of the 'end' column 
+    # and adds 1 to set the position of the new column
+    # 'duration' is the name of the new column
+    # 'duration_values' are the values for the new column
+    df_prepared.insert(df_prepared.columns.get_loc('end')+1,'duration',duration_values)
+    
+    # Finding the path to the npc_codes.csv file and converting it to a DataFrame
+    npc_path = Path(__file__).parent.parent.joinpath('activities','data','npc_codes.csv')
+    npc_df = pd.read_csv(npc_path, encoding = 'utf-8', encoding_errors = 'ignore', usecols = ['Code','Name'])
 
-    print(f"\n{df_prepared}")
+    # Creating replacement names for the countries under the 'country' column in df_prepared dataframe
+    replacement_names = {'UK':'Great Britain',
+                         'USA':'United States of America',
+                         'Korea':'Republic of Korea',
+                         'Russia':'Russian Federation',
+                         'China':"People's Republic of China"}
+    
+    # Replacing the original names with the replacement names
+    df_prepared['country'] = df_prepared['country'].replace(replacement_names)
 
+    # Merging the npc_df and df_prepared dataframe together
+    merged_df = df_prepared.merge(npc_df, how='left', left_on='country', right_on='Name')
+    # There is an extra column 'Name' at the end of the table, which can be dropped
+    # as it is the same as the 'country' column
+    merged_df = merged_df.drop(columns=['Name'])
+
+    print(f"\n{merged_df}")
